@@ -42,7 +42,7 @@ public class BookService {
 //        return bookDTOS;
         return bookRepository.findAll().stream()
                 .map(bookEntity -> mapper.map(bookEntity, BookDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void deleteByBookId(Integer id) {
@@ -58,20 +58,22 @@ public class BookService {
     }
 
 
-    public BookDTO updateById(Integer bookid, BookDTO bookDTO) {
-        Optional<BookEntity> optionalBookEntity = bookRepository.findById(bookid);
-        BookEntity book = new BookEntity();
-        if(optionalBookEntity.isPresent()){
+    public BookDTO updateById(Integer bookId, BookDTO bookDTO) {
+        BookEntity entity = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Book not found for id: " + bookId));
+        BookEntity book;
+//        if(optionalBookEntity.isPresent()){
 //            updatedBookEntity = optionalBookEntity.get();
-              book = optionalBookEntity.get();
+              book = entity;
               book.setBookName(bookDTO.getBookName());
               book.setBookAuthor(bookDTO.getBookAuthor());
               book.setBookPrice(bookDTO.getBookPrice());
+              book.setDescription(bookDTO.getDescription());
               bookRepository.save(book);
               return mapper.map(book, BookDTO.class);
 
-        }
-        return null;
+//        }
+//        return null;
     }
 
     public BookDTO findByBookName(String bookName) {
@@ -89,6 +91,6 @@ public class BookService {
         return bookEntityPage.getContent()
                 .stream()
                 .map(bookEntity -> mapper.map(bookEntity, BookDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 }
