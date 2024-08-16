@@ -4,6 +4,7 @@ import com.demo.curd.dto.BookDTO;
 import com.demo.curd.entity.BookEntity;
 import com.demo.curd.service.BookService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/book")
 //@Validated
+@RequiredArgsConstructor
 public class BookController {
 
-    @Autowired
-    private BookService bookService;
+//    @Autowired
+    private final  BookService bookService;
 
     @PostMapping("/save")
     public ResponseEntity<BookDTO> saveBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult) {

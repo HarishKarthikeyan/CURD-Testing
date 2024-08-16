@@ -4,6 +4,7 @@ import com.demo.curd.dto.BookDTO;
 import com.demo.curd.entity.BookEntity;
 import com.demo.curd.exception.BookNotFoundException;
 import com.demo.curd.repository.BookRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,13 +18,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
-    @Autowired
-    private BookRepository bookRepository;
+    private static final String BOOK_NOT_FOUND_MESSAGE = "Book not found for id: ";
 
-    @Autowired
-    private ModelMapper mapper;
+    private final BookRepository bookRepository;
+    private final ModelMapper mapper;
 
     public BookDTO saveBook( BookDTO bookDTO) {
 
@@ -47,20 +48,20 @@ public class BookService {
 
     public void deleteByBookId(Integer id) {
         bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException("Book not found for id: " + id));
+                .orElseThrow(() -> new BookNotFoundException(BOOK_NOT_FOUND_MESSAGE + id));
         bookRepository.deleteById(id);
     }
 
     public BookDTO getById(Integer bookId) {
         BookEntity entity = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book not found for id: " + bookId));
+                .orElseThrow(() -> new BookNotFoundException(BOOK_NOT_FOUND_MESSAGE + bookId));
         return mapper.map(entity, BookDTO.class);
     }
 
 
     public BookDTO updateById(Integer bookId, BookDTO bookDTO) {
         BookEntity entity = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book not found for id: " + bookId));
+                .orElseThrow(() -> new BookNotFoundException(BOOK_NOT_FOUND_MESSAGE + bookId));
         BookEntity book;
 //        if(optionalBookEntity.isPresent()){
 //            updatedBookEntity = optionalBookEntity.get();
@@ -82,7 +83,7 @@ public class BookService {
     }
 
     public void saveAll(List<BookEntity> bookEntityList) {
-        bookEntityList.forEach(bookEntity -> bookRepository.save(bookEntity));
+        bookEntityList.forEach(bookRepository::save);
     }
 
     public List<BookDTO> getBooksWithPaging(Integer pageNo, Integer pageSize) {
