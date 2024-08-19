@@ -26,7 +26,8 @@ public class BookController {
     @PostMapping("/save")
     public ResponseEntity<BookDTO> saveBook(@RequestBody @Valid BookDTO bookDTO, BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         BookDTO savedBook = bookService.saveBook(bookDTO);
 //        bookService.saveBook(bookDTO);
@@ -63,14 +64,20 @@ public class BookController {
         return ResponseEntity.ok(book);
     }
     @PostMapping("/save-all")
-    public void saveAll(@RequestBody List<BookEntity> bookEntityList){
+    public ResponseEntity<String> saveAll(@RequestBody List<BookEntity> bookEntityList){
         bookService.saveAll(bookEntityList);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Books saved");
     }
 
     @GetMapping("/get-paging")
-    public List<BookDTO> getBooksWithPaging(@RequestParam Integer pageNo, @RequestParam(defaultValue = "5") Integer pageSize){
-        return bookService.getBooksWithPaging(pageNo, pageSize);
+    public ResponseEntity<List<BookDTO>> getBooksWithPaging(@RequestParam Integer pageNo, @RequestParam(defaultValue = "5") Integer pageSize) {
+        List<BookDTO> books = bookService.getBooksWithPaging(pageNo, pageSize);
+        if (books.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(books);
     }
+
 
 }
 
