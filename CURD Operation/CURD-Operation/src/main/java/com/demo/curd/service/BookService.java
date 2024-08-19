@@ -63,18 +63,14 @@ public class BookService {
         BookEntity entity = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException(BOOK_NOT_FOUND_MESSAGE + bookId));
         BookEntity book;
-//        if(optionalBookEntity.isPresent()){
-//            updatedBookEntity = optionalBookEntity.get();
-              book = entity;
-              book.setBookName(bookDTO.getBookName());
-              book.setBookAuthor(bookDTO.getBookAuthor());
-              book.setBookPrice(bookDTO.getBookPrice());
-              book.setDescription(bookDTO.getDescription());
-              bookRepository.save(book);
-              return mapper.map(book, BookDTO.class);
+        book = entity;
+        book.setBookName(bookDTO.getBookName());
+        book.setBookAuthor(bookDTO.getBookAuthor());
+        book.setBookPrice(bookDTO.getBookPrice());
+        book.setDescription(bookDTO.getDescription());
+        bookRepository.save(book);
+        return mapper.map(book, BookDTO.class);
 
-//        }
-//        return null;
     }
 
     public BookDTO findByBookName(String bookName) {
