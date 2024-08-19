@@ -1,6 +1,5 @@
 package com.demo.curd.repository;
 
-import com.demo.curd.dto.BookDTO;
 import com.demo.curd.entity.BookEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
